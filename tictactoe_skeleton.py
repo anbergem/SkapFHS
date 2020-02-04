@@ -1,12 +1,12 @@
 class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
+    PINK = '\033[95m'
+    BLUE = '\033[94m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    RED = '\033[91m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
+    END_COLOR = '\033[0m'
 
 class Piece:
     def __init__(self, symbol: str, color=None):
@@ -20,7 +20,7 @@ class Piece:
     def __str__(self) -> str:
         """Magic method for print(some_piece) and str(some_piece)"""
         if self.color is not None:
-            return f'{self.color}{self.symbol}{bcolors.ENDC}'
+            return f'{self.color}{self.symbol}{bcolors.END_COLOR}'
         return self.symbol
 
     def __eq__(self, other) -> bool:
@@ -46,7 +46,7 @@ class Player:
         self.color = color
 
     def __str__(self) -> str:
-        return f'{self.color}{self.piece}{bcolors.ENDC}'
+        return f'{self.color}{self.piece}{bcolors.END_COLOR}'
 
 class Board:
     def __init__(self):
@@ -80,23 +80,28 @@ class Board:
 
     def get_winner(self):
         pieces = self._pieces
+        # Check row
         for row in range(3):
             if pieces[row][0] == pieces[row][1] == pieces[row][2] and pieces[row][0] != Piece.EMPTY():
                 return pieces[row][0]
+        # Check columns
         for column in range(3):
             if pieces[0][column] == pieces[1][column] == pieces[2][column] and pieces[0][column] != Piece.EMPTY():
                 return pieces[0][column]
 
+        # Check diagonal from top-left
         if pieces[0][0] == pieces[1][1] == pieces[2][2] and pieces[0][0] != Piece.EMPTY():
             return pieces[0][0]
 
+        # Check diagonal from bottom-left
         if pieces[0][2] == pieces[1][1] == pieces[2][0] and pieces[0][2] != Piece.EMPTY():
             return pieces[0][2]
 
         return None
 
     def is_valid_input(self, row, column):
-        if (0 <= row < 3) and (0 <= column < 3) and self._pieces[row][column] == Piece.EMPTY(): # Check boundaries
+        # Check boundaries
+        if (0 <= row < 3) and (0 <= column < 3) and self._pieces[row][column] == Piece.EMPTY():
             return True
         return False
 
@@ -157,5 +162,5 @@ In all other cases, we don't want to run the following lines.
 if __name__ == '__main__':
     cross = Piece('X')
     circle = Piece('O')
-    game = Game(Board(), Player(cross, bcolors.OKBLUE), Player(circle, bcolors.OKGREEN))
+    game = Game(Board(), Player(cross, bcolors.BOLD), Player(circle, bcolors.GREEN))
     game.play()
