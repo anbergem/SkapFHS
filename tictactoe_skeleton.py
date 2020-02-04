@@ -1,13 +1,26 @@
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
 class Piece:
-    def __init__(self, symbol: str):
+    def __init__(self, symbol: str, color=None):
         if type(symbol) != str:
             raise ValueError(f"Symbol must be a string: {symbol}")
         elif len(symbol) != 1:
             raise ValueError(f"Symbol must be 1 letter: {symbol}")
         self.symbol = symbol
+        self.color = color
 
     def __str__(self) -> str:
         """Magic method for print(some_piece) and str(some_piece)"""
+        if self.color is not None:
+            return f'{self.color}{self.symbol}{bcolors.ENDC}'
         return self.symbol
 
     def __eq__(self, other) -> bool:
@@ -27,11 +40,13 @@ class Piece:
         return Piece(" ")
 
 class Player:
-    def __init__(self, piece: Piece):
+    def __init__(self, piece: Piece, color):
         self.piece = piece
+        self.piece.color = color
+        self.color = color
 
     def __str__(self) -> str:
-        return f'{self.piece}'
+        return f'{self.color}{self.piece}{bcolors.ENDC}'
 
 class Board:
     def __init__(self):
@@ -124,7 +139,8 @@ class Game:
             print("Invalid input. Please enter a row and column separated by space.")
 
     def celebrate_victory(self, winner):
-        return
+        print(self.board)
+        print(f"Congratulations, {winner}!")
 
 
 """
@@ -141,13 +157,5 @@ In all other cases, we don't want to run the following lines.
 if __name__ == '__main__':
     cross = Piece('X')
     circle = Piece('O')
-    game = Game(Board(), Player(cross), Player(circle))
+    game = Game(Board(), Player(cross, bcolors.OKBLUE), Player(circle, bcolors.OKGREEN))
     game.play()
-    #board = Board()
-    #board._pieces = [
-    #    [circle, cross, cross],
-    #    [circle, cross, circle],
-    #    [cross, circle, cross],
-    #]
-    #winner = board.get_winner()
-    #print(winner)
