@@ -30,6 +30,8 @@ class Player:
     def __init__(self, piece: Piece):
         self.piece = piece
 
+    def __str__(self) -> str:
+        return f'{self.piece}'
 
 class Board:
     def __init__(self):
@@ -62,6 +64,20 @@ class Board:
         self._pieces[row][column] = piece
 
     def get_winner(self):
+        pieces = self._pieces
+        for row in range(3):
+            if pieces[row][0] == pieces[row][1] == pieces[row][2] and pieces[row][0] != Piece.EMPTY():
+                return pieces[row][0]
+        for column in range(3):
+            if pieces[0][column] == pieces[1][column] == pieces[2][column] and pieces[0][column] != Piece.EMPTY():
+                return pieces[0][column]
+
+        if pieces[0][0] == pieces[1][1] == pieces[2][2] and pieces[0][0] != Piece.EMPTY():
+            return pieces[0][0]
+
+        if pieces[0][2] == pieces[1][1] == pieces[2][0] and pieces[0][2] != Piece.EMPTY():
+            return pieces[0][2]
+
         return None
 
     def is_valid_input(self, row, column):
@@ -127,3 +143,11 @@ if __name__ == '__main__':
     circle = Piece('O')
     game = Game(Board(), Player(cross), Player(circle))
     game.play()
+    #board = Board()
+    #board._pieces = [
+    #    [circle, cross, cross],
+    #    [circle, cross, circle],
+    #    [cross, circle, cross],
+    #]
+    #winner = board.get_winner()
+    #print(winner)
