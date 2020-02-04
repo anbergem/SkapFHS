@@ -65,7 +65,7 @@ class Board:
         return None
 
     def is_valid_input(self, row, column):
-        if (0 < row < 3) and (0 < column < 3) and self._pieces[row][column] != Piece.EMPTY(): # Check boundaries
+        if (0 <= row < 3) and (0 <= column < 3) and self._pieces[row][column] == Piece.EMPTY(): # Check boundaries
             return True
         return False
 
@@ -104,7 +104,8 @@ class Game:
                     return row, column
             except:
                 # IF PROGRAM CRASHES
-                print("Invalid input. Please enter a row and column separated by space.")
+                pass
+            print("Invalid input. Please enter a row and column separated by space.")
 
     def celebrate_victory(self, winner):
         return
