@@ -76,6 +76,9 @@ class Board:
 
     def is_taken(self, row, column) -> bool:
         return self._pieces[row][column] != Piece.EMPTY()
+    
+    def get_piece(self, row, column) -> Piece:
+        return self._pieces[row][column]
 
     def winner(self) -> Optional[Piece]:
         for win_condition in self.win_conditions:
@@ -84,6 +87,13 @@ class Board:
             if first_piece != Piece.EMPTY() and three_pieces.count(first_piece) == len(three_pieces):
                 return first_piece
         return None
+    
+    def is_tie(self) -> bool:
+        for row in self._pieces:
+            for piece in row:
+                if piece == Piece.EMPTY():
+                    return False
+        return True
 
     def update(self, row: int, column: int, piece: Piece):
         self._pieces[row][column] = piece
