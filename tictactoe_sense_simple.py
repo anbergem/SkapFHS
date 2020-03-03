@@ -5,7 +5,6 @@ import time
 from tictactoe import Piece, Player, Board
 
 loop_time_seconds = 0.2
-border_color = (255, 255, 0)
 error_color = (255, 0, 0)
 
 class Game:
@@ -17,7 +16,6 @@ class Game:
         self.joystick.register_key_press_callback(self.on_key_pressed)
         # Use (x, y) coordinates
         self.current_position = [1, 1]
-        self.taken = {}
         self.current_player = player_one
         self.next_player = player_two
         
@@ -28,22 +26,26 @@ class Game:
             time.sleep(loop_time_seconds)
             
             winner = self.board.winner()
-            if winner is not None:
+            is_tie = self.board.is_tie()
+            if winner is not None or is_tie:
                 break
             
-        self.sense.show_message(f"Winner: ")
-        self.sense.show_message(str(self.next_player.piece), text_colour=self.next_player.color)
+        if winner is None and is_tie:
+            self.sense.show_message("Tie!")
+        else:
+            self.sense.show_message("Winner: ")
+            self.sense.show_message(str(self.next_player.piece), text_colour=self.next_player.color)
 
     def _iter_cells(self):
-        for y in range(3):
-            for x in range(3):
+        for y in range(8):
+            for x in range(8):
                 yield (x, y)
         
     def _get_cell_color(self, cell):
         if (cell == tuple(self.current_position)):
-            return tuple(self.current_player.color)
-        elif (cell in self.taken):
-            return self.taken[cell]
+            return tuple(map(lambda x: x - 200 if x - 200 > 0 else 0, self.current_player.color))
+        elif cell[0] < 3 and cell[1] < 3 and self.board.is_taken(cell[1], cell[0]):
+            return self.get_color(self.board.get_piece(cell[1], cell[0]))
         else:
             return (0, 0, 0)
         
@@ -56,31 +58,39 @@ class Game:
         if key == "UP":
             self.current_position[1] = self.current_position[1]-1 if self.current_position[1]-1 > 0 else 0
         elif key == "DOWN":
-            self.current_position[1] = self.current_position[1]+1 if self.current_position[1]+1 < 3 else 3
+            self.current_position[1] = self.current_position[1]+1 if self.current_position[1]+1 < 2 else 2
         elif key == "LEFT":
             self.current_position[0] = self.current_position[0]-1 if self.current_position[0]-1 > 0 else 0
         elif key == "RIGHT":
-            self.current_position[0] = self.current_position[0]+1 if self.current_position[0]+1 < 3 else 3
+            self.current_position[0] = self.current_position[0]+1 if self.current_position[0]+1 < 2 else 2
         elif key == "CENTER":
             self.select_square()
             
     def select_square(self):
-        if self.board.is_taken(*self.current_position):
-            self.board.update(*self.current_position, self.current_player.piece)
+        if not self.board.is_taken(self.current_position[1], self.current_position[0]):
+            self.board.update(self.current_position[1], self.current_position[0], self.current_player.piece)
             self.current_player, self.next_player = self.next_player, self.current_player
         else:
             self.sense.set_pixel(*self.current_position, error_color)
+            
+    def get_color(self, piece: Piece):
+        if piece == self.current_player.piece:
+            return self.current_player.color
+        else:
+            return self.next_player.color
 
 class SensePlayer(Player):
     def __init__(self, piece, color):
         super().__init__(piece)
         self.color = color
+        
 
 if __name__ == '__main__':
     player_one_color = (0, 255, 0)
     player_two_color = (0, 0, 255)
-    game = Game(Board(), SensePlayer(Piece('X'), player_one_color), SensePlayer(Piece('O'), player_two_color))
-    game.play()
+    while True:
+        game = Game(Board(), SensePlayer(Piece('X'), player_one_color), SensePlayer(Piece('O'), player_two_color))
+        game.play()
    
   
   
