@@ -2,7 +2,7 @@ from sense_hat import SenseHat
 import time
 
 sense = SenseHat()
-sense.low_light = True
+sense.low_light = False
 
 starting_value = 50
 color = [starting_value]*3
