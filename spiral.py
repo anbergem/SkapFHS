@@ -44,7 +44,7 @@ while True:
         
         if position == [7, 8]:
             position = [3, 4]
-            increment = -1
+            increment = 0
             counter = 0
             break
 
