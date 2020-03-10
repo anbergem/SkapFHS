@@ -18,11 +18,10 @@ while True:
     for i in range(2):
         # Change direction
         rotation = rotation_list[counter % len(rotation_list)]
-        print(rotation)
         counter += 1
         
-        if counter % 2 == 0:
-            color = random_color()
+        #if counter % 2 == 0:
+        color = random_color()
         
         # Move
         for _ in range(increment):
@@ -40,12 +39,14 @@ while True:
                 
             
             sense.set_pixel(position[0], position[1], color)            
-            time.sleep(0.1)
+            time.sleep(0.01)
         
         if position == [7, 8]:
             position = [3, 4]
             increment = 0
             counter = 0
+            color = random_color()
+            sense.set_pixel(position[0], position[1], color)
             break
 
     increment += 1
